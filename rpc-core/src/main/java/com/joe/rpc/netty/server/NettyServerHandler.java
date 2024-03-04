@@ -4,8 +4,6 @@ import com.joe.rpc.entity.RpcRequest;
 import com.joe.rpc.entity.RpcResponse;
 import com.joe.rpc.provider.ServiceProvider;
 import com.joe.rpc.provider.ServiceProviderImpl;
-import com.joe.rpc.registry.ServiceRegistry;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -29,8 +27,15 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> 
             String interfaceName = request.getInterfaceName();
             Object service = serviceProvider.getServiceProvider(interfaceName);
             Object result = requestHandler.handle(request, service);
-            ChannelFuture future = ctx.writeAndFlush(RpcResponse.success(result));
-            future.addListener(ChannelFutureListener.CLOSE);
+            RpcResponse<Object> response = RpcResponse.success(result, request.getSequenceId());
+            ctx.writeAndFlush(response).addListener((ChannelFutureListener) future1 -> {
+                if (future1.isSuccess()) {
+                    log.info(String.format("服务端发送消息: %s", response));
+                } else {
+                    future1.channel().close();
+                    log.error("发送消息时有错误发生: ", future1.cause());
+                }
+            });
         } finally {
             ReferenceCountUtil.release(request);
         }

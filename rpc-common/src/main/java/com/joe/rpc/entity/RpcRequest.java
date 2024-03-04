@@ -37,4 +37,9 @@ public class RpcRequest implements Serializable {
      */
     private Class<?>[] paramTypes;
 
+    /**
+     * 请求序列号
+     */
+    private Long sequenceId;
+
 }

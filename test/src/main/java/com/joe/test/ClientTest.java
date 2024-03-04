@@ -5,10 +5,11 @@ import com.joe.rpc.api.HelloObject;
 import com.joe.rpc.api.HelloService;
 import com.joe.rpc.netty.client.NettyClient;
 import com.joe.rpc.netty.client.RpcClientProxy;
+import com.joe.rpc.serializer.ProtobufSerializer;
 
 public class ClientTest {
     public static void main(String[] args) {
-        RpcClient client = new NettyClient();
+        RpcClient client = new NettyClient(new ProtobufSerializer(),5000, 3);
         RpcClientProxy rpcClientProxy = new RpcClientProxy(client);
         HelloService helloService = rpcClientProxy.getProxy(HelloService.class);
         HelloObject object = new HelloObject(12, "This is a message");

@@ -2,6 +2,7 @@ package com.joe.rpc.netty.server;
 
 import com.joe.rpc.RpcServer;
 import com.joe.rpc.codec.MessageCodec;
+import com.joe.rpc.codec.ProtocolFrameDecoder;
 import com.joe.rpc.enumeration.RpcError;
 import com.joe.rpc.provider.ServiceProvider;
 import com.joe.rpc.provider.ServiceProviderImpl;
@@ -53,7 +54,7 @@ public class NettyServer implements RpcServer {
         EventLoopGroup boss = new NioEventLoopGroup();
         EventLoopGroup worker = new NioEventLoopGroup();
         LoggingHandler loggingHandler = new LoggingHandler(LogLevel.INFO);
-        MessageCodec messageCodec = new MessageCodec(new JsonSerializer());
+        MessageCodec messageCodec = new MessageCodec(serializer);
         try {
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(boss, worker)
@@ -65,7 +66,7 @@ public class NettyServer implements RpcServer {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline pipeline = ch.pipeline();
-                            pipeline.addLast(new LengthFieldBasedFrameDecoder(2048, 12, 4, 0, 0));
+                            pipeline.addLast(new ProtocolFrameDecoder());
                             pipeline.addLast(loggingHandler);
                             pipeline.addLast(messageCodec);
                             pipeline.addLast(new NettyServerHandler());

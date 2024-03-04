@@ -8,6 +8,6 @@ import com.joe.rpc.entity.RpcRequest;
  */
 public interface RpcClient {
 
-    Object sendRequest(RpcRequest rpcRequest);
+    Object sendRequest(RpcRequest rpcRequest) throws Throwable;
 
 }
