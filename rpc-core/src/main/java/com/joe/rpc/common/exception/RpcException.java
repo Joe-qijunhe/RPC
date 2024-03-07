@@ -1,7 +1,7 @@
-package exception;
+package com.joe.rpc.common.exception;
 
 
-import com.joe.rpc.enumeration.RpcError;
+import com.joe.rpc.common.enumeration.RpcError;
 
 /**
  * RPC调用异常

@@ -3,20 +3,19 @@ package com.joe.rpc.netty.server;
 import com.joe.rpc.RpcServer;
 import com.joe.rpc.codec.MessageCodec;
 import com.joe.rpc.codec.ProtocolFrameDecoder;
-import com.joe.rpc.enumeration.RpcError;
+import com.joe.rpc.common.ServiceMeta;
+import com.joe.rpc.common.enumeration.RpcError;
 import com.joe.rpc.provider.ServiceProvider;
 import com.joe.rpc.provider.ServiceProviderImpl;
 import com.joe.rpc.registry.NacosServiceRegistry;
 import com.joe.rpc.registry.ServiceRegistry;
 import com.joe.rpc.serializer.CommonSerializer;
-import com.joe.rpc.serializer.JsonSerializer;
-import exception.RpcException;
+import com.joe.rpc.common.exception.RpcException;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +45,11 @@ public class NettyServer implements RpcServer {
             throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
         }
         serviceProvider.addServiceProvider(service);
-        serviceRegistry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
+        ServiceMeta serviceMeta = new ServiceMeta();
+        serviceMeta.setServiceName(serviceClass.getCanonicalName());
+        serviceMeta.setAddr(host);
+        serviceMeta.setPort(port);
+        serviceRegistry.register(serviceMeta);
     }
 
     @Override

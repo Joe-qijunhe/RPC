@@ -1,4 +1,4 @@
-package com.joe.rpc.utils;
+package com.joe.rpc.common;
 
 import io.netty.util.concurrent.Promise;
 import lombok.AllArgsConstructor;

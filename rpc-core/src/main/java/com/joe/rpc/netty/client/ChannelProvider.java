@@ -2,6 +2,7 @@ package com.joe.rpc.netty.client;
 
 import com.joe.rpc.codec.MessageCodec;
 import com.joe.rpc.codec.ProtocolFrameDecoder;
+import com.joe.rpc.common.ServiceMeta;
 import com.joe.rpc.serializer.CommonSerializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -23,17 +24,15 @@ public class ChannelProvider {
 
     private static EventLoopGroup eventLoopGroup;
     private static Bootstrap bootstrap = initializeBootstrap();
-
     private static Map<String, Channel> channels = new ConcurrentHashMap<>();
-
     private static CommonSerializer commonSerializer;
 
-    public static Channel get(InetSocketAddress inetSocketAddress) throws InterruptedException {
+    public static Channel get(ServiceMeta serviceMeta) throws InterruptedException {
         if (commonSerializer == null) {
             log.error("没有指定序列化器");
         }
 
-        String key = inetSocketAddress.toString();
+        String key = serviceMeta.toString();
         // 有channel，之前连接过
         if (channels.containsKey(key)) {
             Channel channel = channels.get(key);
@@ -58,7 +57,7 @@ public class ChannelProvider {
         });
         Channel channel = null;
         try {
-            channel = connect(bootstrap, inetSocketAddress);
+            channel = connect(bootstrap, new InetSocketAddress(serviceMeta.getAddr(), serviceMeta.getPort()));
         } catch (ExecutionException e) {
             log.error("连接客户端时有错误发生", e);
             return null;

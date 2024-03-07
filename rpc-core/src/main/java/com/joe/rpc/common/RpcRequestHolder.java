@@ -1,6 +1,4 @@
-package com.joe.rpc.utils;
-
-import com.joe.rpc.entity.RpcResponse;
+package com.joe.rpc.common;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

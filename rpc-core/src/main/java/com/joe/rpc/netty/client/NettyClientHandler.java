@@ -1,12 +1,10 @@
 package com.joe.rpc.netty.client;
 
-import com.joe.rpc.entity.RpcResponse;
-import com.joe.rpc.utils.RpcFuture;
-import com.joe.rpc.utils.RpcRequestHolder;
+import com.joe.rpc.common.RpcResponse;
+import com.joe.rpc.common.RpcFuture;
+import com.joe.rpc.common.RpcRequestHolder;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.util.AttributeKey;
-import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

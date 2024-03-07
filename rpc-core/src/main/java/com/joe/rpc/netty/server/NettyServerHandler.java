@@ -1,7 +1,7 @@
 package com.joe.rpc.netty.server;
 
-import com.joe.rpc.entity.RpcRequest;
-import com.joe.rpc.entity.RpcResponse;
+import com.joe.rpc.common.RpcRequest;
+import com.joe.rpc.common.RpcResponse;
 import com.joe.rpc.provider.ServiceProvider;
 import com.joe.rpc.provider.ServiceProviderImpl;
 import io.netty.channel.ChannelFutureListener;

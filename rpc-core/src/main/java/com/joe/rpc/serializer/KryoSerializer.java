@@ -3,9 +3,9 @@ package com.joe.rpc.serializer;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.joe.rpc.entity.RpcRequest;
-import com.joe.rpc.entity.RpcResponse;
-import com.joe.rpc.enumeration.SerializerCode;
+import com.joe.rpc.common.RpcRequest;
+import com.joe.rpc.common.RpcResponse;
+import com.joe.rpc.common.enumeration.SerializerCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

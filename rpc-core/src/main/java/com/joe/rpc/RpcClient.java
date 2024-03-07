@@ -1,6 +1,6 @@
 package com.joe.rpc;
 
-import com.joe.rpc.entity.RpcRequest;
+import com.joe.rpc.common.RpcRequest;
 
 /**
  * 客户端类通用接口

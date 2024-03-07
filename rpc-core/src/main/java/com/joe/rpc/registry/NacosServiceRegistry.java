@@ -4,11 +4,15 @@ import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingFactory;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
-import com.joe.rpc.enumeration.RpcError;
-import exception.RpcException;
+import com.joe.rpc.common.ServiceMeta;
+import com.joe.rpc.common.enumeration.RpcError;
+import com.joe.rpc.common.exception.RpcException;
+import com.joe.rpc.loadbalance.LoadBalancer;
+import com.joe.rpc.loadbalance.ServiceMetaRes;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -27,9 +31,12 @@ public class NacosServiceRegistry implements ServiceRegistry {
     }
 
     @Override
-    public void register(String serviceName, InetSocketAddress inetSocketAddress) {
+    public void register(ServiceMeta serviceMeta) {
         try {
-            namingService.registerInstance(serviceName, inetSocketAddress.getHostName(), inetSocketAddress.getPort());
+            String serviceName = serviceMeta.getServiceName();
+            String host = serviceMeta.getAddr();
+            int  port = serviceMeta.getPort();
+            namingService.registerInstance(serviceName, host, port);
         } catch (NacosException e) {
             log.error("注册服务时有错误发生:", e);
             throw new RpcException(RpcError.REGISTER_SERVICE_FAILED);
@@ -37,11 +44,18 @@ public class NacosServiceRegistry implements ServiceRegistry {
     }
 
     @Override
-    public InetSocketAddress lookupService(String serviceName) {
+    public List<ServiceMeta> discovery(String serviceName) {
         try {
             List<Instance> instances = namingService.getAllInstances(serviceName);
-            Instance instance = instances.get(0);
-            return new InetSocketAddress(instance.getIp(), instance.getPort());
+            List<ServiceMeta> serviceMetaList = new ArrayList<>();
+            for (Instance instance : instances) {
+                ServiceMeta serviceMeta = new ServiceMeta();
+                serviceMeta.setServiceName(serviceName);
+                serviceMeta.setAddr(instance.getIp());
+                serviceMeta.setPort(instance.getPort());
+                serviceMetaList.add(serviceMeta);
+            }
+            return serviceMetaList;
         } catch (NacosException e) {
             log.error("获取服务时有错误发生:", e);
         }

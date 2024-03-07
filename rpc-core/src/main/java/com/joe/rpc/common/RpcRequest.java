@@ -1,4 +1,4 @@
-package com.joe.rpc.entity;
+package com.joe.rpc.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,11 +1,11 @@
 package com.joe.rpc.codec;
 
-import com.joe.rpc.entity.RpcRequest;
-import com.joe.rpc.entity.RpcResponse;
-import com.joe.rpc.enumeration.PackageType;
-import com.joe.rpc.enumeration.RpcError;
+import com.joe.rpc.common.RpcRequest;
+import com.joe.rpc.common.RpcResponse;
+import com.joe.rpc.common.enumeration.PackageType;
+import com.joe.rpc.common.enumeration.RpcError;
 import com.joe.rpc.serializer.CommonSerializer;
-import exception.RpcException;
+import com.joe.rpc.common.exception.RpcException;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;

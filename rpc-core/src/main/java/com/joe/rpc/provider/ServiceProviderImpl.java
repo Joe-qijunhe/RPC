@@ -1,7 +1,7 @@
 package com.joe.rpc.provider;
 
-import com.joe.rpc.enumeration.RpcError;
-import exception.RpcException;
+import com.joe.rpc.common.enumeration.RpcError;
+import com.joe.rpc.common.exception.RpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

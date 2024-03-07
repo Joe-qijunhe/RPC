@@ -2,8 +2,8 @@ package com.joe.rpc.serializer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joe.rpc.entity.RpcRequest;
-import com.joe.rpc.enumeration.SerializerCode;
+import com.joe.rpc.common.RpcRequest;
+import com.joe.rpc.common.enumeration.SerializerCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

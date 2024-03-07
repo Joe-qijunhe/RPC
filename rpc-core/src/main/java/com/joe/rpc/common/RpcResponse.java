@@ -1,6 +1,6 @@
-package com.joe.rpc.entity;
+package com.joe.rpc.common;
 
-import com.joe.rpc.enumeration.ResponseCode;
+import com.joe.rpc.common.enumeration.ResponseCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

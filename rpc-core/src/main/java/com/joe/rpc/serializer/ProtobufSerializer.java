@@ -1,6 +1,6 @@
 package com.joe.rpc.serializer;
 
-import com.joe.rpc.enumeration.SerializerCode;
+import com.joe.rpc.common.enumeration.SerializerCode;
 import io.protostuff.LinkedBuffer;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
