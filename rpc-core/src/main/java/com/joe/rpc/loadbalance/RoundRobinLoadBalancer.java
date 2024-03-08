@@ -3,17 +3,17 @@ package com.joe.rpc.loadbalance;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.joe.rpc.common.ServiceMeta;
 import com.joe.rpc.registry.ServiceRegistry;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class RoundRobinLoadBalancer implements LoadBalancer{
+public class RoundRobinLoadBalancer implements LoadBalancer {
 
     private static AtomicInteger roundRobinId = new AtomicInteger(0);
-    private final ServiceRegistry serviceRegistry;
+    private ServiceRegistry serviceRegistry;
 
-    public RoundRobinLoadBalancer(ServiceRegistry serviceRegistry) {
-        this.serviceRegistry = serviceRegistry;
+    public RoundRobinLoadBalancer() {
     }
 
     @Override
@@ -26,5 +26,10 @@ public class RoundRobinLoadBalancer implements LoadBalancer{
         ServiceMeta serviceMeta = serviceMetaList.get(i);
         roundRobinId.incrementAndGet();
         return ServiceMetaRes.build(serviceMeta, serviceMetaList);
+    }
+
+    @Override
+    public void setServiceRegistry(ServiceRegistry serviceRegistry) {
+        this.serviceRegistry = serviceRegistry;
     }
 }

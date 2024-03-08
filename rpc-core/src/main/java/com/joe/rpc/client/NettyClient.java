@@ -1,12 +1,16 @@
-package com.joe.rpc.netty.client;
+package com.joe.rpc.client;
 
-import com.joe.rpc.RpcClient;
 import com.joe.rpc.common.*;
 import com.joe.rpc.common.enumeration.ResponseCode;
 import com.joe.rpc.loadbalance.LoadBalancer;
+import com.joe.rpc.loadbalance.LoadBalancerFactory;
+import com.joe.rpc.loadbalance.RoundRobinLoadBalancer;
 import com.joe.rpc.loadbalance.ServiceMetaRes;
 import com.joe.rpc.registry.NacosServiceRegistry;
+import com.joe.rpc.registry.RegistryFactory;
+import com.joe.rpc.registry.ServiceRegistry;
 import com.joe.rpc.serializer.CommonSerializer;
+import com.joe.rpc.serializer.ProtobufSerializer;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.DefaultEventLoop;
@@ -19,15 +23,36 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class NettyClient implements RpcClient {
 
-    private final LoadBalancer loadBalancer;
+    private LoadBalancer loadBalancer;
     private long timeout;
     private long retryCount;
     private String faultTolerantType;
 
-    public NettyClient(int commonSerializerType, String loadBalancerType, String faultTolerantType, long timeout, long retryCount) {
+    static {
+        try {
+            LoadBalancerFactory.init();
+            RegistryFactory.init();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public NettyClient() {
+        ChannelProvider.setCommonSerializer(new ProtobufSerializer());
+        this.loadBalancer = new RoundRobinLoadBalancer();
+        this.loadBalancer.setServiceRegistry(new NacosServiceRegistry());
+        this.faultTolerantType = "FailFast";
+        this.timeout = 5000;
+        this.retryCount = 2;
+    }
+
+    public NettyClient(int commonSerializerType, String loadBalancerType, String registryType, String faultTolerantType, long timeout, long retryCount) {
         CommonSerializer commonSerializer = CommonSerializer.getByCode(commonSerializerType);
         ChannelProvider.setCommonSerializer(commonSerializer);
-        loadBalancer = LoadBalancer.getInstance(loadBalancerType, new NacosServiceRegistry());
+        LoadBalancer balancer = LoadBalancerFactory.get(loadBalancerType);
+        ServiceRegistry serviceRegistry = RegistryFactory.get(registryType);
+        balancer.setServiceRegistry(serviceRegistry);
+        this.loadBalancer = balancer;
         this.faultTolerantType = faultTolerantType;
         this.timeout = timeout;
         this.retryCount = retryCount;

@@ -1,4 +1,4 @@
-package com.joe.rpc.netty.server;
+package com.joe.rpc.server;
 
 import com.joe.rpc.common.RpcRequest;
 import com.joe.rpc.common.RpcResponse;

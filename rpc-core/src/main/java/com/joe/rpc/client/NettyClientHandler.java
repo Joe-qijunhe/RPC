@@ -1,4 +1,4 @@
-package com.joe.rpc.netty.client;
+package com.joe.rpc.client;
 
 import com.joe.rpc.common.RpcResponse;
 import com.joe.rpc.common.RpcFuture;

@@ -1,0 +1,1 @@
+nacos=com.joe.rpc.registry.NacosServiceRegistry

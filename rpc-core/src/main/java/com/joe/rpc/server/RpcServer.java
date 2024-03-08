@@ -1,4 +1,4 @@
-package com.joe.rpc;
+package com.joe.rpc.server;
 
 import com.joe.rpc.serializer.CommonSerializer;
 

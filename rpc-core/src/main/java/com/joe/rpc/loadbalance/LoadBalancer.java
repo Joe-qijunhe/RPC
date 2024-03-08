@@ -8,13 +8,5 @@ import java.util.List;
 
 public interface LoadBalancer {
     ServiceMetaRes select(String serviceName);
-
-    static LoadBalancer getInstance(String name, ServiceRegistry serviceRegistry) {
-        switch (name) {
-            case "RoundRobin":
-                return new RoundRobinLoadBalancer(serviceRegistry);
-            default:
-                return null;
-        }
-    }
+    void setServiceRegistry(ServiceRegistry serviceRegistry);
 }

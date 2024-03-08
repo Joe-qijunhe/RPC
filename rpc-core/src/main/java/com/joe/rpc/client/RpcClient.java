@@ -1,4 +1,4 @@
-package com.joe.rpc;
+package com.joe.rpc.client;
 
 import com.joe.rpc.common.RpcRequest;
 

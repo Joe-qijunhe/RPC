@@ -1,4 +1,4 @@
-package com.joe.rpc.netty.client;
+package com.joe.rpc.client;
 
 import com.joe.rpc.codec.MessageCodec;
 import com.joe.rpc.codec.ProtocolFrameDecoder;

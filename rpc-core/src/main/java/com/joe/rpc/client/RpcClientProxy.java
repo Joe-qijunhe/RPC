@@ -1,6 +1,5 @@
-package com.joe.rpc.netty.client;
+package com.joe.rpc.client;
 
-import com.joe.rpc.RpcClient;
 import com.joe.rpc.common.RpcRequest;
 import com.joe.rpc.common.RpcRequestHolder;
 import lombok.extern.slf4j.Slf4j;

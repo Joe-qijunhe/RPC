@@ -1,16 +1,18 @@
-package com.joe.rpc.netty.server;
+package com.joe.rpc.server;
 
-import com.joe.rpc.RpcServer;
 import com.joe.rpc.codec.MessageCodec;
 import com.joe.rpc.codec.ProtocolFrameDecoder;
 import com.joe.rpc.common.ServiceMeta;
 import com.joe.rpc.common.enumeration.RpcError;
+import com.joe.rpc.provider.ProviderFactory;
 import com.joe.rpc.provider.ServiceProvider;
 import com.joe.rpc.provider.ServiceProviderImpl;
 import com.joe.rpc.registry.NacosServiceRegistry;
+import com.joe.rpc.registry.RegistryFactory;
 import com.joe.rpc.registry.ServiceRegistry;
 import com.joe.rpc.serializer.CommonSerializer;
 import com.joe.rpc.common.exception.RpcException;
+import com.joe.rpc.spi.ExtensionLoader;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -20,22 +22,36 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.InetSocketAddress;
-
 @Slf4j
 public class NettyServer implements RpcServer {
 
     private final String host;
     private final int port;
-    private final ServiceRegistry serviceRegistry;
-    private final ServiceProvider serviceProvider;
+    private ServiceRegistry serviceRegistry;
+    private ServiceProvider serviceProvider;
     private CommonSerializer serializer;
+
+    static {
+        try {
+            RegistryFactory.init();
+            ProviderFactory.init();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public NettyServer(String host, int port) {
         this.host = host;
         this.port = port;
-        serviceRegistry = new NacosServiceRegistry();
-        serviceProvider = new ServiceProviderImpl();
+        this.serviceRegistry = new NacosServiceRegistry();
+        this.serviceProvider = new ServiceProviderImpl();
+    }
+
+    public NettyServer(String host, int port, String serviceRegistry, String serviceProvider) {
+        this.host = host;
+        this.port = port;
+        this.serviceRegistry = RegistryFactory.get(serviceRegistry);
+        this.serviceProvider = ProviderFactory.get(serviceProvider);
     }
 
     @Override
