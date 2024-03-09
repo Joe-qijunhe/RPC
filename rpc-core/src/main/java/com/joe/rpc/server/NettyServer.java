@@ -12,6 +12,8 @@ import com.joe.rpc.registry.RegistryFactory;
 import com.joe.rpc.registry.ServiceRegistry;
 import com.joe.rpc.serializer.CommonSerializer;
 import com.joe.rpc.common.exception.RpcException;
+import com.joe.rpc.serializer.ProtobufSerializer;
+import com.joe.rpc.serializer.SerializerFactory;
 import com.joe.rpc.spi.ExtensionLoader;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -35,31 +37,35 @@ public class NettyServer implements RpcServer {
         try {
             RegistryFactory.init();
             ProviderFactory.init();
+            SerializerFactory.init();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    /**
+     * 初始化默认值
+     * @param host
+     * @param port
+     */
     public NettyServer(String host, int port) {
         this.host = host;
         this.port = port;
         this.serviceRegistry = new NacosServiceRegistry();
         this.serviceProvider = new ServiceProviderImpl();
+        this.serializer = new ProtobufSerializer();
     }
 
-    public NettyServer(String host, int port, String serviceRegistry, String serviceProvider) {
+    public NettyServer(String host, int port, String serviceRegistry, String serviceProvider, String serializerType) {
         this.host = host;
         this.port = port;
         this.serviceRegistry = RegistryFactory.get(serviceRegistry);
         this.serviceProvider = ProviderFactory.get(serviceProvider);
+        this.serializer = SerializerFactory.get(serializerType);
     }
 
     @Override
     public <T> void publishService(Object service, Class<T> serviceClass) {
-        if(serializer == null) {
-            log.error("未设置序列化器");
-            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
-        }
         serviceProvider.addServiceProvider(service);
         ServiceMeta serviceMeta = new ServiceMeta();
         serviceMeta.setServiceName(serviceClass.getCanonicalName());
@@ -99,11 +105,6 @@ public class NettyServer implements RpcServer {
             boss.shutdownGracefully();
             worker.shutdownGracefully();
         }
-    }
-
-    @Override
-    public void setSerializer(CommonSerializer serializer) {
-        this.serializer = serializer;
     }
 
 }

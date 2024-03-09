@@ -1,0 +1,3 @@
+1=com.joe.rpc.serializer.JsonSerializer
+0=com.joe.rpc.serializer.KryoSerializer
+3=com.joe.rpc.serializer.ProtobufSerializer

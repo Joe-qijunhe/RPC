@@ -6,6 +6,7 @@ import com.joe.rpc.common.enumeration.PackageType;
 import com.joe.rpc.common.enumeration.RpcError;
 import com.joe.rpc.serializer.CommonSerializer;
 import com.joe.rpc.common.exception.RpcException;
+import com.joe.rpc.serializer.SerializerFactory;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -73,7 +74,8 @@ public class MessageCodec extends MessageToMessageCodec<ByteBuf, Object> {
         }
         // 4字节序列算法号
         int serializerCode = in.readInt();
-        CommonSerializer serializer = CommonSerializer.getByCode(serializerCode);
+//        CommonSerializer serializer = CommonSerializer.getByCode(serializerCode);
+        CommonSerializer serializer = SerializerFactory.get(serializerCode + "");
         if(serializer == null) {
             log.error("不识别的反序列化器: {}", serializerCode);
             throw new RpcException(RpcError.UNKNOWN_SERIALIZER);

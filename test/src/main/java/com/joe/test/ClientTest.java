@@ -8,8 +8,8 @@ import com.joe.rpc.client.RpcClientProxy;
 
 public class ClientTest {
     public static void main(String[] args) {
-//        RpcClient client = new NettyClient(3, "RoundRobin", "nacos","Failover",5000, 3);
-        RpcClient client = new NettyClient();
+        RpcClient client = new NettyClient("3", "RoundRobin", "nacos","Failover",5000, 3);
+//        RpcClient client = new NettyClient();
         RpcClientProxy rpcClientProxy = new RpcClientProxy(client);
         HelloService helloService = rpcClientProxy.getProxy(HelloService.class);
         HelloObject object = new HelloObject(12, "This is a message");

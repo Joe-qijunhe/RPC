@@ -11,6 +11,7 @@ import com.joe.rpc.registry.RegistryFactory;
 import com.joe.rpc.registry.ServiceRegistry;
 import com.joe.rpc.serializer.CommonSerializer;
 import com.joe.rpc.serializer.ProtobufSerializer;
+import com.joe.rpc.serializer.SerializerFactory;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.DefaultEventLoop;
@@ -24,19 +25,26 @@ import java.util.concurrent.TimeUnit;
 public class NettyClient implements RpcClient {
 
     private LoadBalancer loadBalancer;
+    // 请求超时事件（millisecond）
     private long timeout;
+    // 请求重试次数
     private long retryCount;
+    // 容错机制
     private String faultTolerantType;
 
     static {
         try {
             LoadBalancerFactory.init();
             RegistryFactory.init();
+            SerializerFactory.init();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    /**
+     * 初始化默认值
+     */
     public NettyClient() {
         ChannelProvider.setCommonSerializer(new ProtobufSerializer());
         this.loadBalancer = new RoundRobinLoadBalancer();
@@ -46,10 +54,13 @@ public class NettyClient implements RpcClient {
         this.retryCount = 2;
     }
 
-    public NettyClient(int commonSerializerType, String loadBalancerType, String registryType, String faultTolerantType, long timeout, long retryCount) {
-        CommonSerializer commonSerializer = CommonSerializer.getByCode(commonSerializerType);
+    public NettyClient(String serializerType, String loadBalancerType, String registryType, String faultTolerantType, long timeout, long retryCount) {
+        // 序列化器
+        CommonSerializer commonSerializer = SerializerFactory.get(serializerType);
         ChannelProvider.setCommonSerializer(commonSerializer);
+        // 负载均衡
         LoadBalancer balancer = LoadBalancerFactory.get(loadBalancerType);
+        // 服务注册
         ServiceRegistry serviceRegistry = RegistryFactory.get(registryType);
         balancer.setServiceRegistry(serviceRegistry);
         this.loadBalancer = balancer;
@@ -69,7 +80,9 @@ public class NettyClient implements RpcClient {
         String host = serviceMeta.getAddr();
         int port = serviceMeta.getPort();
         log.info("找到服务提供方 {}:{}", host, port);
+        // 请求封装类
         RpcFuture<RpcResponse> rpcFuture = new RpcFuture<>(new DefaultProgressivePromise<>(new DefaultEventLoop()), timeout);
+        // key: 请求序号，val: 请求
         RpcRequestHolder.REQUEST_MAP.put(rpcRequest.getSequenceId(), rpcFuture);
         // 重试机制
         while (count < retryCount) {
