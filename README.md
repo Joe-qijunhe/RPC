@@ -14,7 +14,7 @@ RPC（Remote Procedure Call）远程过程调用协议，可以让客户端像�
 4. **动态代理** ：因为 RPC 的主要目的就是让我们调用远程方法像调用本地方法一样简单，使用动态代理可以屏蔽远程方法调用的细节比如网络传输。
 5. **负载均衡** ：避免单个服务器响应同一请求，而造成服务器宕机、崩溃等问题
 
-<img src="D:\Project\项目\rpc\RPC\assets\architecture.png" alt="系统架构" style="zoom:67%;" />
+<img src=".\assets\architecture.png" alt="系统架构" style="zoom:67%;" />
 
 ## 项目亮点
 
